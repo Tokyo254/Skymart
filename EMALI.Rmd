@@ -1,0 +1,137 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Group the data by month and sum the sales for each month
+EMALIDaily <- EMALI %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# create xts time series object
+EMALIDailyts <- xts(EMALIDaily$Sales, order.by = EMALIDaily$Day)
+
+
+PlotEMALI <- dygraph(EMALIDailyts)%>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2")) %>%
+  dyLegend(show = "always") 
+PlotEMALI
+```
+
+
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+EMALIDept <- EMALI %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+EMALIDept <- dcast(EMALIDept, Department  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+EMALIDept$`2023-06-18` <- format(EMALIDept$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-17` <- format(EMALIDept$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-16` <- format(EMALIDept$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-15` <- format(EMALIDept$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-14` <- format(EMALIDept$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-13` <- format(EMALIDept$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-12` <- format(EMALIDept$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-11` <- format(EMALIDept$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-10` <- format(EMALIDept$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-09` <- format(EMALIDept$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-08` <- format(EMALIDept$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-07` <- format(EMALIDept$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDept$`2023-06-06` <- format(EMALIDept$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+EMALIDept
+
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+EMALICategory <- EMALI %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+EMALICategory <- dcast(EMALICategory, Category  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+
+
+EMALICategory$`2023-06-18` <- format(EMALICategory$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-17` <- format(EMALICategory$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-16` <- format(EMALICategory$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-15` <- format(EMALICategory$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-14` <- format(EMALICategory$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-13` <- format(EMALICategory$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-12` <- format(EMALICategory$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-11` <- format(EMALICategory$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-10` <- format(EMALICategory$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-09` <- format(EMALICategory$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-08` <- format(EMALICategory$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-07` <- format(EMALICategory$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategory$`2023-06-06` <- format(EMALICategory$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+EMALICategory
+
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+EMALIDeptwk <- EMALI %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+EMALIDeptwk <- dcast(EMALIDeptwk, Department  ~  week, value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(`2023-06-11`))
+# Format the salary column as custom accounting values
+
+
+EMALIDeptwk$`2023-06-11` <- format(EMALIDeptwk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDeptwk$`2023-06-04` <- format(EMALIDeptwk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDeptwk$`2023-05-28` <- format(EMALIDeptwk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALIDeptwk$`2023-05-21` <- format(EMALIDeptwk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+
+EMALIDeptwk
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+EMALICategorywk <- EMALI %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+EMALICategorywk <- dcast(EMALICategorywk, Category  ~  week, value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(`2023-06-11`))
+# Format the salary column as custom accounting values
+
+
+EMALICategorywk$`2023-06-11` <- format(EMALICategorywk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategorywk$`2023-06-04` <- format(EMALICategorywk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategorywk$`2023-05-28` <- format(EMALICategorywk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+EMALICategorywk$`2023-05-21` <- format(EMALICategorywk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+EMALICategorywk
+
+```

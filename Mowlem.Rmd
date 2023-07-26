@@ -1,0 +1,120 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Group the data by month and sum the sales for each month
+MOWLEMDaily <- MOWLEM %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# create xts time series object
+MOWLEMDailyts <- xts(MOWLEMDaily$Sales, order.by = MOWLEMDaily$Day)
+
+
+PlotMOWLEM <- dygraph(MOWLEMDailyts)%>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2")) %>%
+  dyLegend(show = "always") 
+PlotMOWLEM
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+MOWLEMDept <- MOWLEM %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+MOWLEMDept <- dcast(MOWLEMDept, Department  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+MOWLEMDept$`2023-06-18` <- format(MOWLEMDept$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-17` <- format(MOWLEMDept$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-16` <- format(MOWLEMDept$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-15` <- format(MOWLEMDept$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-14` <- format(MOWLEMDept$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-13` <- format(MOWLEMDept$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-12` <- format(MOWLEMDept$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-11` <- format(MOWLEMDept$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-10` <- format(MOWLEMDept$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-09` <- format(MOWLEMDept$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-08` <- format(MOWLEMDept$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-07` <- format(MOWLEMDept$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDept$`2023-06-06` <- format(MOWLEMDept$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+MOWLEMDept
+
+```
+```{r}
+# Group the data by month and sum the sales for each month
+MOWLEMCategory <- MOWLEM %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+MOWLEMCategory <- dcast(MOWLEMCategory, Category  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+
+
+MOWLEMCategory$`2023-06-18` <- format(MOWLEMCategory$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-17` <- format(MOWLEMCategory$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-16` <- format(MOWLEMCategory$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-15` <- format(MOWLEMCategory$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-14` <- format(MOWLEMCategory$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-13` <- format(MOWLEMCategory$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-12` <- format(MOWLEMCategory$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-11` <- format(MOWLEMCategory$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-10` <- format(MOWLEMCategory$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-09` <- format(MOWLEMCategory$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-08` <- format(MOWLEMCategory$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-07` <- format(MOWLEMCategory$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategory$`2023-06-06` <- format(MOWLEMCategory$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+MOWLEMCategory
+```
+```{r}
+# Group the data by month and sum the sales for each month
+MOWLEMCategoryweek <- MOWLEM %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week,Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+MOWLEMCategorywk <- dcast(MOWLEMCategoryweek, Category  ~  week, value.var = "Sales") %>% select(1,6,5,4,3,2) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+MOWLEMCategorywk$`2023-06-18` <- format(MOWLEMCategorywk$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategorywk$`2023-06-11` <- format(MOWLEMCategorywk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategorywk$`2023-06-04` <- format(MOWLEMCategorywk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategorywk$`2023-05-28` <- format(MOWLEMCategorywk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategorywk$`2023-05-21` <- format(MOWLEMCategorywk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMCategorywk
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+MOWLEMDeptweek <- MOWLEM %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+MOWLEMDeptweek <- dcast(MOWLEMDeptweek, Department  ~  week, value.var = "Sales") %>% select(1,6,5,4,3,2) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+MOWLEMDeptweek$`2023-06-18` <- format(MOWLEMDeptweek$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDeptweek$`2023-06-11` <- format(MOWLEMDeptweek$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDeptweek$`2023-06-04` <- format(MOWLEMDeptweek$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDeptweek$`2023-05-28` <- format(MOWLEMDeptweek$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDeptweek$`2023-05-21` <- format(MOWLEMDeptweek$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+MOWLEMDeptweek
+```
+

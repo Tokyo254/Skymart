@@ -1,0 +1,138 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Group the data by month and sum the sales for each month
+dataWeekly <- data %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) %>% arrange(desc(week))
+
+# create xts time series object
+dataWeeklyts <- xts(dataWeekly$Sales, order.by = dataWeekly$week)
+
+
+PlotWeekly <- dygraph(dataWeeklyts)%>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2")) %>%
+  dyLegend(show = "always") # Customize x-axis labels
+PlotWeekly
+
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+dataWeekly <- data %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week,Store.Name) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) %>% arrange(desc(week))
+
+# Reshape the data from long to wide format
+Weeklystore <- dcast(dataWeekly, Store.Name ~  week  , value.var = "Sales") %>% select(1,5,4,3,2)
+
+
+# Contribution
+
+#  Weeklystore$Cont_WK25 <-  paste0(round((Weeklystore$`2023-06-18` /  sum(Weeklystore$`2023-06-18`) * 100),2), "%")
+Weeklystore$Cont_WK24 <-  paste0(round((Weeklystore$`2023-06-11` /  sum(Weeklystore$`2023-06-11`) * 100),2), "%")
+Weeklystore$Cont_WK23 <-  paste0(round((Weeklystore$`2023-06-04` /  sum(Weeklystore$`2023-06-04`) * 100),2), "%")
+Weeklystore$Cont_WK22 <-  paste0(round((Weeklystore$`2023-05-28` /  sum(Weeklystore$`2023-05-28`) * 100),2), "%")
+
+#Growth
+
+ # Weeklystore$Growth_WK25 <-  paste0(round((((Weeklystore$`2023-06-18` - Weeklystore$`2023-06-11`)/Weeklystore$`2023-06-11`) * 100),2), "%")
+Weeklystore$Growth_WK24 <-  paste0(round((((Weeklystore$`2023-06-11` - Weeklystore$`2023-06-04`)/Weeklystore$`2023-06-04`) * 100),2), "%")
+Weeklystore$Growth_WK23 <-  paste0(round((((Weeklystore$`2023-06-04`- Weeklystore$`2023-05-28`)/Weeklystore$`2023-05-28`) * 100),2), "%")
+Weeklystore$Growth_WK22 <-  paste0(round((((Weeklystore$`2023-05-28`- Weeklystore$`2023-05-21`)/Weeklystore$`2023-05-21`) * 100),2), "%")
+
+# Rename the column headers with week numbers
+
+Weeklystore$`2023-05-21` <- format(Weeklystore$`2023-05-21` , big.mark = ",", decimal.mark = ".", nsmall = 0)
+Weeklystore$`2023-05-28`<- format(Weeklystore$`2023-05-28` , big.mark = ",", decimal.mark = ".", nsmall = 0)
+Weeklystore$`2023-06-04` <- format(Weeklystore$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+Weeklystore$`2023-06-11` <- format(Weeklystore$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+#Weeklystore$`2023-06-18` <- format(Weeklystore$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+Weeklystore
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+DeptWeekly <- data %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week,Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+WeeklyDept <- dcast(DeptWeekly, Department ~  week  , value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(WeeklyDept$`2023-06-11`))
+
+#Growth
+
+ # Weeklystore$Growth_WK25 <-  paste0(round((((Weeklystore$`2023-06-18` - Weeklystore$`2023-06-11`)/Weeklystore$`2023-06-11`) * 100),2), "%")
+WeeklyDept$Growth_WK24 <-  paste0(round((((WeeklyDept$`2023-06-11` - WeeklyDept$`2023-06-04`)/WeeklyDept$`2023-06-04`) * 100),2), "%")
+WeeklyDept$Growth_WK23 <-  paste0(round((((WeeklyDept$`2023-06-04`- WeeklyDept$`2023-05-28`)/WeeklyDept$`2023-05-28`) * 100),2), "%")
+WeeklyDept$Growth_WK22 <-  paste0(round((((WeeklyDept$`2023-05-28`- WeeklyDept$`2023-05-21`)/WeeklyDept$`2023-05-21`) * 100),2), "%")
+
+# Rename the column headers with week numbers
+
+WeeklyDept$`2023-05-21` <- format(WeeklyDept$`2023-05-21` , big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeeklyDept$`2023-05-28`<- format(WeeklyDept$`2023-05-28` , big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeeklyDept$`2023-06-04` <- format(WeeklyDept$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeeklyDept$`2023-06-11` <- format(WeeklyDept$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+#Weeklystore$`2023-06-18` <- format(Weeklystore$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+WeeklyDept
+```
+
+
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+CategoryWeekly <- data %>%
+  mutate(week = floor_date(data$Day, "week")) %>%
+  group_by(week,Department,Store.Name) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales))
+
+
+# Reshape the data from long to wide format
+CategoryWeekly <- dcast(CategoryWeekly, Department + Store.Name ~  week, value.var = "Sales")   %>% select(2,1,6,5,4,3) %>% arrange(desc(`2023-06-11`))
+
+# Format the salary column as custom accounting values
+
+#CategoryWeekly$`2023-06-18` <- format(CategoryWeekly$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryWeekly$`2023-06-11` <- format(CategoryWeekly$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryWeekly$`2023-06-04` <- format(CategoryWeekly$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryWeekly$`2023-05-28` <- format(CategoryWeekly$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryWeekly$`2023-05-21` <- format(CategoryWeekly$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+CategoryWeekly
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+WeekCat <- data %>%
+  mutate(week = floor_date(data$Day, "week")) %>%
+  group_by(week,Department,Category,Store.Name) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales))
+
+
+# Reshape the data from long to wide format
+WeekCatly <- dcast(WeekCat,Category+ Department + Store.Name ~  week, value.var = "Sales")   %>% select(3,2,1,7,6,5,4) %>% arrange(desc(`2023-06-11`))
+
+
+# Format the salary column as custom accounting values
+
+#WeekCatly$`2023-06-18` <- format(WeekCatly$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeekCatly$`2023-06-11` <- format(WeekCatly$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeekCatly$`2023-06-04` <- format(WeekCatly$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeekCatly$`2023-05-28` <- format(WeekCatly$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeekCatly$`2023-05-21` <- format(WeekCatly$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+WeekCatly
+```
+
+

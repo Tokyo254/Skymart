@@ -1,0 +1,123 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Group the data by month and sum the sales for each month
+dataDaily <- data %>%
+  mutate(month = floor_date(data$Day, "day")) %>%
+  group_by(month) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# create xts time series object
+dataDailyts <- xts(dataDaily$Sales, order.by = dataDaily$month)
+
+
+PlotData <- dygraph(dataDailyts)%>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2")) %>%
+  dyLegend(show = "always") 
+PlotData
+
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+dataDaily <- data %>%
+  mutate(Day = floor_date(data$Day, "day")) %>%
+  group_by(Day,Store.Name) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+dataDaily <- dcast(dataDaily, Store.Name  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+dataDaily$`2023-06-18` <- format(dataDaily$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-17` <- format(dataDaily$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-16` <- format(dataDaily$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-15` <- format(dataDaily$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-14` <- format(dataDaily$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-13` <- format(dataDaily$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-12` <- format(dataDaily$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-11` <- format(dataDaily$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-10` <- format(dataDaily$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-09` <- format(dataDaily$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-08` <- format(dataDaily$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-07` <- format(dataDaily$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+dataDaily$`2023-06-06` <- format(dataDaily$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+dataDaily
+
+```
+
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+CategoryDaily <- data %>%
+  mutate(Day = floor_date(data$Day, "day")) %>%
+  group_by(Day,Department,Store.Name) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales))
+
+
+# Reshape the data from long to wide format
+CategoryDaily <- dcast(CategoryDaily, Department + Store.Name ~  Day, value.var = "Sales")   %>% select(2,1,30,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+
+# Format the salary column as custom accounting values
+
+
+CategoryDaily$`2023-06-18` <- format(CategoryDaily$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-17` <- format(CategoryDaily$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-16` <- format(CategoryDaily$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-15` <- format(CategoryDaily$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-14` <- format(CategoryDaily$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-13` <- format(CategoryDaily$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-12` <- format(CategoryDaily$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-11` <- format(CategoryDaily$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-10` <- format(CategoryDaily$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-09` <- format(CategoryDaily$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-08` <- format(CategoryDaily$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-07` <- format(CategoryDaily$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-06` <- format(CategoryDaily$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+CategoryDaily$`2023-06-05` <- format(CategoryDaily$`2023-06-05`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+CategoryDaily
+
+```
+```{r}
+# Group the data by month and sum the sales for each month
+DeptDaily <- data %>%
+  mutate(Day = floor_date(data$Day, "day")) %>%
+  group_by(Day,Department,Category,Store.Name) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales))
+
+
+# Reshape the data from long to wide format
+ALlDaily <- dcast(DeptDaily,Category+ Department + Store.Name ~  Day, value.var = "Sales")   %>% select(3,2,1,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+
+# Format the salary column as custom accounting values
+
+
+ALlDaily$`2023-06-18` <- format(ALlDaily$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-17` <- format(ALlDaily$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-16` <- format(ALlDaily$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-15` <- format(ALlDaily$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-14` <- format(ALlDaily$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-13` <- format(ALlDaily$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-12` <- format(ALlDaily$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-11` <- format(ALlDaily$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-10` <- format(ALlDaily$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-09` <- format(ALlDaily$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-08` <- format(ALlDaily$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-07` <- format(ALlDaily$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-06` <- format(ALlDaily$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+ALlDaily$`2023-06-05` <- format(ALlDaily$`2023-06-05`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+ALlDaily
+```
+

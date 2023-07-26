@@ -1,0 +1,137 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Group the data by month and sum the sales for each month
+KAWANGWAREDaily <- KAWANGWARE %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# create xts time series object
+KAWANGWAREDailyts <- xts(KAWANGWAREDaily$Sales, order.by = KAWANGWAREDaily$Day)
+
+
+PlotKAWANGWARE <- dygraph(KAWANGWAREDailyts)%>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2")) %>%
+  dyLegend(show = "always") 
+PlotKAWANGWARE
+```
+
+
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+KawangwareDept <- KAWANGWARE %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+KawangwareDept <- dcast(KawangwareDept, Department  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+KawangwareDept$`2023-06-18` <- format(KawangwareDept$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-17` <- format(KawangwareDept$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-16` <- format(KawangwareDept$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-15` <- format(KawangwareDept$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-14` <- format(KawangwareDept$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-13` <- format(KawangwareDept$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-12` <- format(KawangwareDept$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-11` <- format(KawangwareDept$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-10` <- format(KawangwareDept$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-09` <- format(KawangwareDept$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-08` <- format(KawangwareDept$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-07` <- format(KawangwareDept$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDept$`2023-06-06` <- format(KawangwareDept$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+KawangwareDept
+
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+KawangwareCategory <- KAWANGWARE %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+KawangwareCategory <- dcast(KawangwareCategory, Category  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+
+
+KawangwareCategory$`2023-06-18` <- format(KawangwareCategory$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-17` <- format(KawangwareCategory$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-16` <- format(KawangwareCategory$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-15` <- format(KawangwareCategory$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-14` <- format(KawangwareCategory$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-13` <- format(KawangwareCategory$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-12` <- format(KawangwareCategory$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-11` <- format(KawangwareCategory$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-10` <- format(KawangwareCategory$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-09` <- format(KawangwareCategory$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-08` <- format(KawangwareCategory$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-07` <- format(KawangwareCategory$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategory$`2023-06-06` <- format(KawangwareCategory$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+KawangwareCategory
+
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+KawangwareDeptwk <- KAWANGWARE %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+KawangwareDeptwk <- dcast(KawangwareDeptwk, Department  ~  week, value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(`2023-06-11`))
+# Format the salary column as custom accounting values
+
+
+KawangwareDeptwk$`2023-06-11` <- format(KawangwareDeptwk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDeptwk$`2023-06-04` <- format(KawangwareDeptwk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDeptwk$`2023-05-28` <- format(KawangwareDeptwk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareDeptwk$`2023-05-21` <- format(KawangwareDeptwk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+
+KawangwareDeptwk
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+KawangwareCategorywk <- KAWANGWARE %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+KawangwareCategorywk <- dcast(KawangwareCategorywk, Category  ~  week, value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(`2023-06-11`))
+# Format the salary column as custom accounting values
+
+
+KawangwareCategorywk$`2023-06-11` <- format(KawangwareCategorywk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategorywk$`2023-06-04` <- format(KawangwareCategorywk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategorywk$`2023-05-28` <- format(KawangwareCategorywk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+KawangwareCategorywk$`2023-05-21` <- format(KawangwareCategorywk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+KawangwareCategorywk
+```
+

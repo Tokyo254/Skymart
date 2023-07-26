@@ -1,0 +1,822 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r include=FALSE}
+library(dplyr)
+library(tidyverse)
+library(tidyr)
+library(shiny)
+library(flexdashboard)
+library(tidyverse)
+library(shinythemes)
+library(shinyBS)
+library(dygraphs)
+library(xts)
+library(reshape2)
+library(DT)
+```
+
+
+```{r}
+data <- read.csv("Skymart Daily Sales.csv")
+
+# convert the date column from character to date format
+data$Day <- as.Date(data$Day, "%m/%d/%Y")
+data$Store.Name <- as.factor(data$Store.Name)
+data$Department <- as.factor(data$Department)
+data$Category <- as.factor(data$Category)
+
+
+#Removing Unwanted Rows
+
+data <- data %>% select(1,6,7,8,10,11,12,14,15)
+
+
+
+# Subset the data based on the Each Individual Sales Rep.
+EMALI	 <- subset(data, Store.Name == "EMALI")
+KAYOLE <- subset(data, Store.Name == "KAYOLE")
+KAWANGWARE  <- subset(data, Store.Name == "KAWANGWARE")
+MARKET <- subset(data, Store.Name == "MARKET")
+MLOLONGO  <- subset(data, Store.Name == "MLOLONGO")
+MOWLEM <- subset(data, Store.Name == "MOWLEM")
+TALA <- subset(data, Store.Name == "TALA")
+TENA <- subset(data, Store.Name == "TENA")
+UMOJA <- subset(data, Store.Name == "UMOJA")
+
+```
+
+
+```{r}
+ui <- dashboardPage(
+  dashboardHeader(title = "Skymart"
+                  ),
+  #Sidebar
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Overall_Performance", tabName = "Overall_Performance", icon = icon("dashboard")),
+      menuItem("Daily_Review", tabName = "Daily_Review", icon = icon("th")),
+      menuItem("Weekly_Review", tabName = "Weekly_Review", icon = icon("th")),
+      menuItem("EMALI", tabName = "EMALI", icon = icon("user")),
+      menuItem(" KAYOLE", tabName = "KAYOLE", icon = icon("user")),
+      menuItem("KAWANGWARE", tabName = "KAWANGWARE", icon = icon("user")),
+      menuItem("MARKET", tabName = "MARKET", icon = icon("user")),
+      menuItem("MLOLONGO", tabName = "MLOLONGO", icon = icon("user")),
+      menuItem("MOWLEM", tabName = "MOWLEM", icon = icon("user")),
+      menuItem("TALA", tabName = "TALA", icon = icon("user")),
+      menuItem("TENA", tabName = "TENA", icon = icon("user")),
+      menuItem("UMOJA", tabName = "UMOJA", icon = icon("user"))
+
+    )
+  ),
+  
+  ## Body content
+  
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = "Daily_Review",
+               h2("Daily Sales Review"),
+              fluidPage(
+                fluidRow(
+                  box(dygraphOutput("PlotData", height = 250),width = 12)),
+                   h2("Daily Branch Performance"),
+                   DTOutput("dataDaily"), 
+                  # Input for filter
+                  # Input for Store.Name filter
+                   h2("Daily Department Performance"),
+                   selectInput("store_filter", "Store:", choices = c("All","EMALI","KAYOLE","MLOLONGO","MOWLEM","TALA","TENA","UMOJA","KAWANGWARE","MARKET")),
+                    # Input for Department filter
+                   selectInput("department_filter", "Department:", choices = c("All", "PACKAGING",
+                                                            "JUICES &SOFT DRINKS",
+                                                            "DAIRY",
+                                                            "CONFECTIONERY",
+                                                            "BEVERAGES",
+                                                            "TOILETARIES",
+                                                            "SKYMART BAKERY",
+                                                            "SANITARY",
+                                                            "SOAPS & DETERGENTS",
+                                                            "COSMETICS & BEAUTY",
+                                                            "DENTAL CARE",
+                                                            "FURNITURE",
+                                                            "CARPETS & MATS",
+                                                            "BREAKFAST & SPREADS",
+                                                            "RICE",
+                                                            "FLOUR",
+                                                            "AIRCARE & HOME FRAGRANCE",
+                                                            "COOKING FATS & OILS",
+                                                            "SUGAR",
+                                                            "ELECTRONICS & ELECTRICALS",
+                                                            "CLOTHING",
+                                                            "TOYS",
+                                                            "CYCLES & ACCESSORIES",
+                                                            "SPICES & FOOD ADDITIVES",
+                                                            "CROCKERY",
+                                                            "STATIONERY",
+                                                            "PASTA",
+                                                            "CEREALS & PULSES",
+                                                            "HOUSEHOLD",
+                                                            "SHOE CARE",
+                                                            "GROCERY",
+                                                            "PLASTICS",
+                                                            "HARDWARE",
+                                                            "HEALTH CARE & WELLNESS",
+                                                            "INSECTICIDE & PESTICIDE",
+                                                            "MEAT & MEAT PRODUCTS",
+                                                            "BEDDINGS",
+                                                            "SHOES",
+                                                            "LIQOUR",
+                                                            "GIFT & DECO",
+                                                            "SKYMART BUTCHERY",
+                                                            "SKYMART CEREALS",
+                                                            "SPORTS & FITNESS",
+                                                            "INTERNAL USE",
+                                                            "EMPTIES",
+                                                            "GAS & ACCESSORIES",
+                                                            "PARTY TIME",
+                                                            "BAGS&BOXES",
+                                                            "CAR CARE")),
+                  DT::dataTableOutput("CategoryDaily"),
+                 h2("Daily Category Performance"),
+                   selectInput("store_filterd", "Store:", choices = c("All","EMALI","KAYOLE","MLOLONGO","MOWLEM","TALA","TENA","UMOJA","KAWANGWARE","MARKET")),
+                    # Input for Department filter
+                   selectInput("department_filterd", "Department:", choices = c("All", "PACKAGING",
+                                                            "JUICES &SOFT DRINKS",
+                                                            "DAIRY",
+                                                            "CONFECTIONERY",
+                                                            "BEVERAGES",
+                                                            "TOILETARIES",
+                                                            "SKYMART BAKERY",
+                                                            "SANITARY",
+                                                            "SOAPS & DETERGENTS",
+                                                            "COSMETICS & BEAUTY",
+                                                            "DENTAL CARE",
+                                                            "FURNITURE",
+                                                            "CARPETS & MATS",
+                                                            "BREAKFAST & SPREADS",
+                                                            "RICE",
+                                                            "FLOUR",
+                                                            "AIRCARE & HOME FRAGRANCE",
+                                                            "COOKING FATS & OILS",
+                                                            "SUGAR",
+                                                            "ELECTRONICS & ELECTRICALS",
+                                                            "CLOTHING",
+                                                            "TOYS",
+                                                            "CYCLES & ACCESSORIES",
+                                                            "SPICES & FOOD ADDITIVES",
+                                                            "CROCKERY",
+                                                            "STATIONERY",
+                                                            "PASTA",
+                                                            "CEREALS & PULSES",
+                                                            "HOUSEHOLD",
+                                                            "SHOE CARE",
+                                                            "GROCERY",
+                                                            "PLASTICS",
+                                                            "HARDWARE",
+                                                            "HEALTH CARE & WELLNESS",
+                                                            "INSECTICIDE & PESTICIDE",
+                                                            "MEAT & MEAT PRODUCTS",
+                                                            "BEDDINGS",
+                                                            "SHOES",
+                                                            "LIQOUR",
+                                                            "GIFT & DECO",
+                                                            "SKYMART BUTCHERY",
+                                                            "SKYMART CEREALS",
+                                                            "SPORTS & FITNESS",
+                                                            "INTERNAL USE",
+                                                            "EMPTIES",
+                                                            "GAS & ACCESSORIES",
+                                                            "PARTY TIME",
+                                                            "BAGS&BOXES",
+                                                            "CAR CARE")),
+                  DT::dataTableOutput("ALlDaily")
+              )
+      ),
+      tabItem(tabName = "Weekly_Review",
+              h2("Weekly Report"),
+         fluidPage(
+           fluidRow(box(dygraphOutput("PlotWeekly", height = 250),width = 10)),
+           h2("Weekly Store Performance"),
+           DT::dataTableOutput("Weeklystore"),
+           h2("Weekly Department Performance"),
+           DT::dataTableOutput("WeeklyDept"),
+           h2("Weekly Department Performance"),
+                     selectInput("Wstore_filter", "Store:", choices = c("All","EMALI","KAYOLE","MLOLONGO","MOWLEM","TALA","TENA","UMOJA","KAWANGWARE","MARKET")),
+                      # Input for Department filter
+                     selectInput("Wdepartment_filter", "Department:", choices = c("All", "PACKAGING",
+                                                              "JUICES &SOFT DRINKS",
+                                                              "DAIRY",
+                                                              "CONFECTIONERY",
+                                                              "BEVERAGES",
+                                                              "TOILETARIES",
+                                                              "SKYMART BAKERY",
+                                                              "SANITARY",
+                                                              "SOAPS & DETERGENTS",
+                                                              "COSMETICS & BEAUTY",
+                                                              "DENTAL CARE",
+                                                              "FURNITURE",
+                                                              "CARPETS & MATS",
+                                                              "BREAKFAST & SPREADS",
+                                                              "RICE",
+                                                              "FLOUR",
+                                                              "AIRCARE & HOME FRAGRANCE",
+                                                              "COOKING FATS & OILS",
+                                                              "SUGAR",
+                                                              "ELECTRONICS & ELECTRICALS",
+                                                              "CLOTHING",
+                                                              "TOYS",
+                                                              "CYCLES & ACCESSORIES",
+                                                              "SPICES & FOOD ADDITIVES",
+                                                              "CROCKERY",
+                                                              "STATIONERY",
+                                                              "PASTA",
+                                                              "CEREALS & PULSES",
+                                                              "HOUSEHOLD",
+                                                              "SHOE CARE",
+                                                              "GROCERY",
+                                                              "PLASTICS",
+                                                              "HARDWARE",
+                                                              "HEALTH CARE & WELLNESS",
+                                                              "INSECTICIDE & PESTICIDE",
+                                                              "MEAT & MEAT PRODUCTS",
+                                                              "BEDDINGS",
+                                                              "SHOES",
+                                                              "LIQOUR",
+                                                              "GIFT & DECO",
+                                                              "SKYMART BUTCHERY",
+                                                              "SKYMART CEREALS",
+                                                              "SPORTS & FITNESS",
+                                                              "INTERNAL USE",
+                                                              "EMPTIES",
+                                                              "GAS & ACCESSORIES",
+                                                              "PARTY TIME",
+                                                              "BAGS&BOXES",
+                                                              "CAR CARE")),
+                    DT::dataTableOutput("CategoryWeekly"),
+                  h2("Weekly Category Performance"),
+                     selectInput("Wstore_filter1", "Store:", choices = c("All","EMALI","KAYOLE","MLOLONGO","MOWLEM","TALA","TENA","UMOJA","KAWANGWARE","MARKET")),
+                      # Input for Department filter
+                     selectInput("Wdepartment_filter1", "Department:", choices = c("All", "PACKAGING",
+                                                              "JUICES &SOFT DRINKS",
+                                                              "DAIRY",
+                                                              "CONFECTIONERY",
+                                                              "BEVERAGES",
+                                                              "TOILETARIES",
+                                                              "SKYMART BAKERY",
+                                                              "SANITARY",
+                                                              "SOAPS & DETERGENTS",
+                                                              "COSMETICS & BEAUTY",
+                                                              "DENTAL CARE",
+                                                              "FURNITURE",
+                                                              "CARPETS & MATS",
+                                                              "BREAKFAST & SPREADS",
+                                                              "RICE",
+                                                              "FLOUR",
+                                                              "AIRCARE & HOME FRAGRANCE",
+                                                              "COOKING FATS & OILS",
+                                                              "SUGAR",
+                                                              "ELECTRONICS & ELECTRICALS",
+                                                              "CLOTHING",
+                                                              "TOYS",
+                                                              "CYCLES & ACCESSORIES",
+                                                              "SPICES & FOOD ADDITIVES",
+                                                              "CROCKERY",
+                                                              "STATIONERY",
+                                                              "PASTA",
+                                                              "CEREALS & PULSES",
+                                                              "HOUSEHOLD",
+                                                              "SHOE CARE",
+                                                              "GROCERY",
+                                                              "PLASTICS",
+                                                              "HARDWARE",
+                                                              "HEALTH CARE & WELLNESS",
+                                                              "INSECTICIDE & PESTICIDE",
+                                                              "MEAT & MEAT PRODUCTS",
+                                                              "BEDDINGS",
+                                                              "SHOES",
+                                                              "LIQOUR",
+                                                              "GIFT & DECO",
+                                                              "SKYMART BUTCHERY",
+                                                              "SKYMART CEREALS",
+                                                              "SPORTS & FITNESS",
+                                                              "INTERNAL USE",
+                                                              "EMPTIES",
+                                                              "GAS & ACCESSORIES",
+                                                              "PARTY TIME",
+                                                              "BAGS&BOXES",
+                                                              "CAR CARE")),
+                    DT::dataTableOutput("WeekCatly")
+         )
+      ),
+      # Third tab content
+      tabItem(tabName = "EMALI",
+                    h2("EMALI"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotEMALI", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("EMALIDept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("EMALICategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("EMALIDeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("EMALICategorywk"),
+            )
+            
+
+      ),
+      # Forth tab content
+      tabItem(tabName = "KAYOLE",
+               h2("KAYOLE"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotKAYOLE", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("KAYOLEDept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("KAYOLECategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("KAYOLEDeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("KAYOLECategorywk"),
+            )
+            
+      ),
+      # Fifth tab content
+      tabItem(tabName = "KAWANGWARE",
+              h2("Kawangware"),
+              fluidPage(
+                fluidRow( dygraphOutput("PlotKAWANGWARE", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("KawangwareDept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("KawangwareCategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("KawangwareDeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("KawangwareCategorywk"),
+              )
+        
+      ),
+      # Seventh tab content
+      tabItem(tabName = "MLOLONGO",
+              h2("MLOLONGO"),
+             fluidPage(tags$head(
+                                    tags$style(
+                                      HTML("
+                                        h2 {
+                                          font-weight: bold;
+                                          text-align: center;
+                                        }
+                                      ")
+                                    )
+                                  ),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotMLOLONGO", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("MLOLONGODept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("MLOLONGOCategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("MLOLONGODeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("MLOLONGOCategorywk"),
+            )
+                       
+              )
+                  ),
+      # Eight tab content
+      tabItem(tabName = "MOWLEM",
+            h2("MOWLEM"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotMOWLEM", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("MOWLEMDept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("MOWLEMCategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("MOWLEMDeptweek"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("MOWLEMCategorywk"),
+            )
+            
+      ),
+      # Nineth tab content
+      tabItem(tabName = "TALA",
+               h2("TALA"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotTALA", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("TALADept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("TALACategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("TALADeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("TALACategorywk"),
+            )
+           
+      ),
+      # Tenth tab content
+      tabItem(tabName = "TENA",
+               h2("TENA"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotTENA", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("TENADept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("TENACategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("TENADeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("TENACategorywk"),
+            )
+            
+              
+      ),
+      # Tenth tab content
+      tabItem(tabName = "UMOJA",
+               h2("UMOJA"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotUMOJA", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("UMOJADept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("UMOJACategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("UMOJADeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("UMOJACategorywk"),
+            )
+       
+      ),
+      # Eleventh tab content
+      tabItem(tabName = "Overall_Performance"
+              
+      ),
+      # Forth tab content
+      tabItem(tabName = "MARKET",
+              h2("MARKET"),
+            fluidPage(
+               fluidRow(dygraphOutput("PlotMARKET", height = 250),width = 10),
+                h2("Daily Department Performance"),
+                DT::dataTableOutput("MARKETDept"),
+                h2("Daily Category Performance"),
+                DT::dataTableOutput("MARKETCategory"),
+                h2("Weekly Department Performance"),
+                DT::dataTableOutput("MARKETDeptwk"),
+                h2("Weekly Category Performance"),
+                DT::dataTableOutput("MARKETCategorywk"),
+            )
+            
+      )
+    )
+  )
+
+)
+
+
+server <- function(input, output) {
+ 
+  
+      # Render Overall's table
+   output$PlotData <- renderDygraph({
+    PlotData
+  })
+    output$dataDaily <- renderDT({
+    dataDaily
+  }, options = list(pageLength = 11, scrollX = TRUE,
+                    rownames = FALSE ))
+  
+ # Filtered data based on inputs
+  filtered_data <- reactive({
+    # Filter by Store.Name
+    if (input$store_filter != "All") {
+      CategoryDaily <- CategoryDaily[CategoryDaily$Store.Name == input$store_filter, ]
+    }
+    
+    # Filter by Department
+    if (input$department_filter != "All") {
+      CategoryDaily <- CategoryDaily[CategoryDaily$Department == input$department_filter, ]
+    }
+    
+    return(CategoryDaily)
+  })
+  
+  # Render data table
+  output$CategoryDaily <- DT::renderDataTable({
+    DT::datatable(filtered_data(), options = list(pageLength = 10))
+  })
+  
+   # Filtered data based on inputs
+  filtered_datad <- reactive({
+    # Filter by Store.Name
+    if (input$store_filterd != "All") {
+      ALlDaily <- ALlDaily[ALlDaily$Store.Name == input$store_filterd, ]
+    }
+    
+    # Filter by Department
+    if (input$department_filterd != "All") {
+      ALlDaily <- ALlDaily[ALlDaily$Department == input$department_filterd, ]
+    }
+    
+    return(ALlDaily)
+  })
+  
+  # Render data table
+  output$ALlDaily <- DT::renderDataTable({
+    DT::datatable(filtered_datad(), options = list(pageLength = 10))
+  })
+  
+  
+
+  
+  
+       # Render KAWANGWARE'S table
+ 
+    output$KawangwareDept <- renderDT({
+    KawangwareDept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+    output$PlotKAWANGWARE <- renderDygraph({
+    PlotKAWANGWARE
+  })
+    output$KawangwareCategory <- renderDT({
+    KawangwareCategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+   
+    output$KawangwareDeptwk <- renderDT({
+    KawangwareDeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE )) 
+    output$KawangwareCategorywk <- renderDT({
+    KawangwareCategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+    
+    
+    
+        # Render Weekly table
+   output$PlotWeekly <- renderDygraph({
+    PlotWeekly
+  })
+    output$Weeklystore <- DT::renderDataTable({
+    DT::datatable(Weeklystore, options = list(pageLength = 10))
+  })
+     output$WeeklyDept <- DT::renderDataTable({
+    DT::datatable(WeeklyDept, options = list(pageLength = 10))
+  })
+   # Filtered data based on inputs
+  filtered_datawk <- reactive({
+    # Filter by Store.Name
+    if (input$Wstore_filter != "All") {
+      CategoryWeekly <- CategoryWeekly[CategoryWeekly$Store.Name == input$Wstore_filter, ]
+    }
+    
+    # Filter by Department
+    if (input$Wdepartment_filter != "All") {
+      CategoryWeekly <- CategoryWeekly[CategoryWeekly$Department == input$Wdepartment_filter, ]
+    }
+    
+    return(CategoryWeekly)
+  })
+  
+  # Render data table
+  output$CategoryWeekly <- DT::renderDataTable({
+    DT::datatable(filtered_datawk(), options = list(pageLength = 10))
+  })
+  
+  
+   # Filtered data based on inputs
+  filtered_datawkly <- reactive({
+    # Filter by Store.Name
+    if (input$Wstore_filter1 != "All") {
+      WeekCatly <- WeekCatly[WeekCatly$Store.Name == input$Wstore_filter1, ]
+    }
+    
+    # Filter by Department
+    if (input$Wdepartment_filter1 != "All") {
+      WeekCatly <- WeekCatly[WeekCatly$Department == input$Wdepartment_filter1, ]
+    }
+    
+    return(WeekCatly)
+  })
+  
+  # Render data table
+  output$WeekCatly <- DT::renderDataTable({
+    DT::datatable(filtered_datawkly(), options = list(pageLength = 10))
+  })
+  
+  
+  
+    
+    # Render MOWLEM table
+  
+   output$MOWLEMCategory <- renderDT({
+    MOWLEMCategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$MOWLEMDept <- renderDT({
+    MOWLEMDept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotMOWLEM <- renderDygraph({
+    PlotMOWLEM
+  })
+        output$MOWLEMDeptweek <- renderDT({
+    MOWLEMDeptweek
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$MOWLEMCategorywk <- renderDT({
+    MOWLEMCategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))     
+       
+       
+       
+  
+           
+    # Render UMOJA table
+  
+   output$UMOJACategory <- renderDT({
+    UMOJACategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$UMOJADept <- renderDT({
+    UMOJADept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotUMOJA <- renderDygraph({
+    PlotUMOJA
+  })
+        output$UMOJADeptwk <- renderDT({
+    UMOJADeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$UMOJACategorywk <- renderDT({
+    UMOJACategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))     
+     
+       
+                  
+    # Render MLOLONGO table
+  
+   output$MLOLONGOCategory <- renderDT({
+    MLOLONGOCategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$MLOLONGODept <- renderDT({
+    MLOLONGODept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotMLOLONGO <- renderDygraph({
+    PlotMLOLONGO
+  })
+        output$MLOLONGODeptwk <- renderDT({
+    MLOLONGODeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$MLOLONGOCategorywk <- renderDT({
+    MLOLONGOCategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))     
+     
+       
+       
+                         
+    # Render TENA table
+  
+   output$TENACategory <- renderDT({
+    TENACategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$TENADept <- renderDT({
+    TENADept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotTENA <- renderDygraph({
+    PlotTENA
+  })
+        output$TENADeptwk <- renderDT({
+    TENADeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$TENACategorywk <- renderDT({
+    TENACategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))     
+     
+    
+       
+                              
+    # Render TENA table
+  
+   output$TALACategory <- renderDT({
+    TALACategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$TALADept <- renderDT({
+    TALADept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotTALA <- renderDygraph({
+    PlotTALA
+  })
+        output$TALADeptwk <- renderDT({
+    TALADeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$TALACategorywk <- renderDT({
+    TALACategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))     
+     
+       
+          # Render MARKET table
+  
+   output$MARKETCategory <- renderDT({
+    MARKETCategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$MARKETDept <- renderDT({
+    MARKETDept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotMARKET <- renderDygraph({
+    PlotMARKET
+  })
+        output$MARKETDeptwk <- renderDT({
+    MARKETDeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$MARKETCategorywk <- renderDT({
+    MARKETCategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))   
+       
+      
+       
+                 # Render KAYOLE table
+  
+   output$KAYOLECategory <- renderDT({
+    KAYOLECategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$KAYOLEDept <- renderDT({
+    KAYOLEDept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotKAYOLE <- renderDygraph({
+    PlotKAYOLE
+  })
+        output$KAYOLEDeptwk <- renderDT({
+    KAYOLEDeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$KAYOLECategorywk <- renderDT({
+    KAYOLECategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))   
+       
+    
+       
+       
+       
+            # Render EMALI table
+  
+   output$EMALICategory <- renderDT({
+    EMALICategory
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$EMALIDept <- renderDT({
+    EMALIDept
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+     output$PlotEMALI <- renderDygraph({
+    PlotEMALI
+  })
+        output$EMALIDeptwk <- renderDT({
+    EMALIDeptwk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))
+        
+       output$EMALICategorywk <- renderDT({
+    EMALICategorywk
+  }, options = list(pageLength = 10, scrollX = TRUE,
+                    rownames = FALSE ))   
+       
+    
+}
+shinyApp(ui, server)
+```
+

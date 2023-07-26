@@ -1,0 +1,140 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+ 
+```{r}
+# Group the data by month and sum the sales for each month
+UMOJADaily <- UMOJA %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# create xts time series object
+UMOJADailyts <- xts(UMOJADaily$Sales, order.by = UMOJADaily$Day)
+
+
+PlotUMOJA <- dygraph(UMOJADailyts)%>%
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2")) %>%
+  dyLegend(show = "always") 
+PlotUMOJA
+```
+
+
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+UMOJADept <- UMOJA %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+UMOJADept <- dcast(UMOJADept, Department  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+UMOJADept$`2023-06-18` <- format(UMOJADept$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-17` <- format(UMOJADept$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-16` <- format(UMOJADept$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-15` <- format(UMOJADept$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-14` <- format(UMOJADept$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-13` <- format(UMOJADept$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-12` <- format(UMOJADept$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-11` <- format(UMOJADept$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-10` <- format(UMOJADept$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-09` <- format(UMOJADept$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-08` <- format(UMOJADept$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-07` <- format(UMOJADept$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADept$`2023-06-06` <- format(UMOJADept$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+UMOJADept
+
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+UMOJACategory <- UMOJA %>%
+  mutate(Day = floor_date(Day, "day")) %>%
+  group_by(Day, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+UMOJACategory <- dcast(UMOJACategory, Category  ~  Day, value.var = "Sales") %>% select(1,29,28,27,26,25,24,23,22,21,20,19,18,17) %>% arrange(desc(`2023-06-18`))
+# Format the salary column as custom accounting values
+
+
+
+UMOJACategory$`2023-06-18` <- format(UMOJACategory$`2023-06-18`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-17` <- format(UMOJACategory$`2023-06-17`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-16` <- format(UMOJACategory$`2023-06-16`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-15` <- format(UMOJACategory$`2023-06-15`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-14` <- format(UMOJACategory$`2023-06-14`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-13` <- format(UMOJACategory$`2023-06-13`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-12` <- format(UMOJACategory$`2023-06-12`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-11` <- format(UMOJACategory$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-10` <- format(UMOJACategory$`2023-06-10`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-09` <- format(UMOJACategory$`2023-06-09`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-08` <- format(UMOJACategory$`2023-06-08`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-07` <- format(UMOJACategory$`2023-06-07`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategory$`2023-06-06` <- format(UMOJACategory$`2023-06-06`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+UMOJACategory
+
+```
+
+
+```{r}
+# Group the data by month and sum the sales for each month
+UMOJADeptwk <- UMOJA %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Department) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+UMOJADeptwk <- dcast(UMOJADeptwk, Department  ~  week, value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(`2023-06-11`))
+# Format the salary column as custom accounting values
+
+
+UMOJADeptwk$`2023-06-11` <- format(UMOJADeptwk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADeptwk$`2023-06-04` <- format(UMOJADeptwk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADeptwk$`2023-05-28` <- format(UMOJADeptwk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJADeptwk$`2023-05-21` <- format(UMOJADeptwk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+
+
+
+
+UMOJADeptwk
+```
+
+```{r}
+# Group the data by month and sum the sales for each month
+UMOJACategorywk <- UMOJA %>%
+  mutate(week = floor_date(Day, "week")) %>%
+  group_by(week, Category) %>%
+  summarize(Sales = sum(Sum.of.Total.Sales)) 
+
+# Reshape the data from long to wide format
+UMOJACategorywk <- dcast(UMOJACategorywk, Category  ~  week, value.var = "Sales") %>% select(1,5,4,3,2) %>% arrange(desc(`2023-06-11`))
+# Format the salary column as custom accounting values
+
+
+UMOJACategorywk$`2023-06-11` <- format(UMOJACategorywk$`2023-06-11`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategorywk$`2023-06-04` <- format(UMOJACategorywk$`2023-06-04`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategorywk$`2023-05-28` <- format(UMOJACategorywk$`2023-05-28`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+UMOJACategorywk$`2023-05-21` <- format(UMOJACategorywk$`2023-05-21`, big.mark = ",", decimal.mark = ".", nsmall = 0)
+
+UMOJACategorywk
+
+```
+
+
